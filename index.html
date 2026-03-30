@@ -3,17 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard Escolar Pro | Phythecreator</title>
+    <title>Dashboard Escolar | Phythecreator</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
     
     <style>
         :root {
-            --bg: #f0f4f8;
+            --bg: #f8fafc;
             --card: #ffffff;
-            --primary: #4f46e5;
-            --text-main: #1e293b;
-            --text-sub: #64748b;
+            --primary: #6366f1;
+            --secondary: #94a3b8;
+            --text: #1e293b;
             --border: #e2e8f0;
             --success: #10b981;
             --warning: #f59e0b;
@@ -22,255 +22,216 @@
 
         body { 
             font-family: 'Plus Jakarta Sans', sans-serif; 
-            background: var(--bg); 
-            color: var(--text-main); 
+            background: var(--bg); color: var(--text); 
             margin: 0; padding: 20px; 
         }
 
+        .container { max-width: 1200px; margin: 0 auto; }
         .header { text-align: center; margin-bottom: 30px; }
-        .header h1 { font-size: 2rem; color: var(--primary); margin-bottom: 5px; }
+        .header h1 { font-size: 2.2rem; color: var(--primary); margin: 0; }
 
         /* Gráficos */
-        .charts-row {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 20px;
-            max-width: 1200px;
-            margin: 0 auto 40px;
+        .charts-section {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 40px;
+        }
+        .chart-container { 
+            background: var(--card); padding: 20px; border-radius: 20px; 
+            border: 1px solid var(--border); box-shadow: 0 4px 6px rgba(0,0,0,0.02);
         }
 
-        .chart-box {
-            background: var(--card);
-            padding: 20px;
-            border-radius: 16px;
-            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
-            border: 1px solid var(--border);
-        }
-
-        /* Grid de Disciplinas */
-        .disciplinas-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-            gap: 20px;
-            max-width: 1200px;
-            margin: 0 auto;
+        /* Grid Disciplinas */
+        .grid {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 20px;
         }
 
         .card {
-            background: var(--card);
-            padding: 20px;
-            border-radius: 16px;
-            border: 1px solid var(--border);
-            transition: all 0.3s ease;
+            background: var(--card); padding: 25px; border-radius: 20px;
+            border: 1px solid var(--border); transition: 0.3s;
         }
 
-        .card:hover { transform: translateY(-3px); box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); }
+        .card:hover { transform: translateY(-5px); box-shadow: 0 12px 20px rgba(0,0,0,0.05); }
 
-        h3 { margin-top: 0; color: var(--primary); border-bottom: 2px solid var(--bg); padding-bottom: 10px; }
+        h3 { margin-top: 0; color: var(--primary); font-size: 1.4rem; border-bottom: 2px solid var(--bg); padding-bottom: 10px; }
 
-        .input-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
-        
-        label { font-size: 0.85rem; font-weight: 600; color: var(--text-sub); }
-        
+        .input-group { margin-bottom: 15px; }
+        label { display: block; font-size: 0.85rem; font-weight: 600; color: var(--secondary); margin-bottom: 5px; }
+
         input, select {
-            padding: 6px 10px;
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            font-family: inherit;
-            width: 70px;
+            width: 100%; padding: 10px; border: 1px solid var(--border);
+            border-radius: 10px; font-family: inherit; box-sizing: border-box;
         }
 
-        .tests-container {
-            background: var(--bg);
-            padding: 10px;
-            border-radius: 10px;
-            margin-bottom: 15px;
+        .tests-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(60px, 1fr)); gap: 10px; margin-top: 5px; }
+
+        .btn-calc {
+            width: 100%; padding: 12px; background: var(--primary); color: white;
+            border: none; border-radius: 10px; font-weight: bold; cursor: pointer;
+            transition: 0.2s; margin-top: 10px;
+        }
+        .btn-calc:hover { background: #4f46e5; }
+
+        .result-box {
+            margin-top: 20px; padding: 15px; border-radius: 12px; background: var(--bg);
+            text-align: center; display: none;
         }
 
-        .test-inputs { display: flex; gap: 5px; margin-top: 8px; flex-wrap: wrap; }
-
-        .result-area {
-            margin-top: 15px;
-            padding-top: 15px;
-            border-top: 2px dashed var(--bg);
-        }
-
-        .nivel-badge {
-            display: inline-block;
-            padding: 5px 15px;
-            border-radius: 20px;
-            font-weight: 800;
-            font-size: 1.1rem;
-            margin-bottom: 10px;
-        }
-
-        .reasoning {
-            font-size: 0.8rem;
-            line-height: 1.4;
-            color: var(--text-sub);
-            background: #f8fafc;
-            padding: 10px;
-            border-radius: 8px;
-        }
-
-        .btn-update {
-            display: block; width: 250px; margin: 40px auto;
-            padding: 15px; background: var(--primary); color: white;
-            border: none; border-radius: 12px; font-weight: bold;
-            cursor: pointer; font-size: 1rem;
-        }
+        .score-big { font-size: 1.5rem; font-weight: 800; margin-bottom: 5px; }
+        .reasoning { font-size: 0.85rem; color: var(--secondary); line-height: 1.4; }
     </style>
 </head>
 <body>
 
-<div class="header">
-    <h1>Dashboard Académico</h1>
-    <p>Escala Portuguesa (1 a 5) • Phythecreator</p>
-</div>
-
-<div class="charts-row">
-    <div class="chart-box">
-        <canvas id="barChart"></canvas>
+<div class="container">
+    <div class="header">
+        <h1>Dashboard de Notas</h1>
+        <p>Sistema 60/20/20 • Phythecreator</p>
     </div>
-    <div class="chart-box">
-        <canvas id="lineChart"></canvas>
+
+    <div class="charts-section">
+        <div class="chart-container"><canvas id="barChart"></canvas></div>
+        <div class="chart-container"><canvas id="lineChart"></canvas></div>
     </div>
+
+    <div id="subjects-grid" class="grid"></div>
 </div>
-
-<div id="grid" class="disciplinas-grid"></div>
-
-<button class="btn-update" onclick="atualizarDashboard()">ATUALIZAR TUDO 📈</button>
 
 <script>
     const disciplinas = ["História", "Português", "Geografia", "Francês", "Inglês", "Matemática", "Físico-Química", "Ciências", "Educação Física"];
-    
-    function renderCards() {
-        const grid = document.getElementById('grid');
+    let dataNiveis = new Array(disciplinas.length).fill(0);
+
+    function init() {
+        const grid = document.getElementById('subjects-grid');
         disciplinas.forEach((d, i) => {
             grid.innerHTML += `
                 <div class="card">
                     <h3>${d}</h3>
                     
-                    <div class="input-row">
-                        <label>Nº de Testes:</label>
-                        <select id="num-t-${i}" onchange="gerarInputsTestes(${i})">
+                    <div class="input-group">
+                        <label>Quantidade de Testes:</label>
+                        <select id="num-t-${i}" onchange="updateTestInputs(${i})">
                             <option value="2">2 Testes</option>
                             <option value="3" selected>3 Testes</option>
                             <option value="4">4 Testes</option>
                         </select>
                     </div>
 
-                    <div class="tests-container">
+                    <div class="input-group">
                         <label>Notas dos Testes (0-100):</label>
-                        <div id="test-inputs-${i}" class="test-inputs"></div>
+                        <div id="tests-area-${i}" class="tests-row"></div>
                     </div>
 
-                    <div class="input-row">
-                        <label>Atitudes (20%):</label>
-                        <input type="number" id="at-${i}" value="0" min="0" max="100">
+                    <div class="input-group">
+                        <label>Atitudes e Valores (0-100):</label>
+                        <input type="number" id="at-${i}" placeholder="Ex: 85" min="0" max="100">
                     </div>
 
-                    <div class="input-row">
-                        <label>Questão-Aula/Trabalhos (20%):</label>
-                        <input type="number" id="tr-${i}" value="0" min="0" max="100">
+                    <div class="input-group">
+                        <label>Trabalhos / Questão-Aula (0-100):</label>
+                        <input type="number" id="tr-${i}" placeholder="Ex: 90" min="0" max="100">
                     </div>
 
-                    <div class="input-row" style="margin-top:15px; color: var(--primary)">
-                        <label>Tua Autoavaliação (1-5):</label>
-                        <input type="number" id="auto-${i}" value="3" min="1" max="5">
+                    <div class="input-group">
+                        <label>Tua Autoavaliação (Nível 1-5):</label>
+                        <input type="number" id="auto-${i}" placeholder="1 a 5" min="1" max="5">
                     </div>
 
-                    <div class="result-area" id="res-${i}">
-                        <div class="nivel-badge" id="badge-${i}">Nível -</div>
-                        <div class="reasoning" id="reason-${i}">Preenche os dados para ver a análise.</div>
+                    <button class="btn-calc" onclick="calcularDisciplina(${i})">CALCULAR MÉDIA</button>
+
+                    <div id="res-box-${i}" class="result-box">
+                        <div id="score-${i}" class="score-big">0%</div>
+                        <div id="nivel-${i}" style="font-weight:bold; margin-bottom:10px;">Nível -</div>
+                        <div id="reason-${i}" class="reasoning"></div>
                     </div>
                 </div>
             `;
-            gerarInputsTestes(i);
+            updateTestInputs(i);
         });
+        updateCharts();
     }
 
-    function gerarInputsTestes(index) {
+    function updateTestInputs(index) {
         const num = document.getElementById(`num-t-${index}`).value;
-        const container = document.getElementById(`test-inputs-${index}`);
+        const container = document.getElementById(`tests-area-${index}`);
         container.innerHTML = "";
         for(let j=1; j<=num; j++) {
-            container.innerHTML += `<input type="number" class="t-input-${index}" placeholder="T${j}" value="0">`;
+            container.innerHTML += `<input type="number" class="t-input-${index}" placeholder="T${j}" min="0" max="100">`;
         }
     }
 
-    let barChart, lineChart;
+    function calcularDisciplina(i) {
+        const tests = Array.from(document.getElementsByClassName(`t-input-${i}`)).map(input => Number(input.value) || 0);
+        const avgTests = tests.reduce((a, b) => a + b, 0) / tests.length;
+        const atitudes = Number(document.getElementById(`at-${i}`).value) || 0;
+        const trabalhos = Number(document.getElementById(`tr-${i}`).value) || 0;
+        const auto = Number(document.getElementById(`auto-${i}`).value) || 0;
 
-    function atualizarDashboard() {
-        const labels = disciplinas;
-        const valoresNiveis = [];
+        // Fórmula 60/20/20
+        const finalScore = (avgTests * 0.6) + (atitudes * 0.2) + (trabalhos * 0.2);
+        
+        let nivel = 1;
+        if(finalScore >= 90) nivel = 5;
+        else if(finalScore >= 70) nivel = 4;
+        else if(finalScore >= 50) nivel = 3;
+        else if(finalScore >= 20) nivel = 2;
 
-        disciplinas.forEach((_, i) => {
-            const testes = Array.from(document.getElementsByClassName(`t-input-${i}`)).map(input => Number(input.value));
-            const mediaTestes = testes.reduce((a,b) => a+b, 0) / testes.length;
-            const atitudes = Number(document.getElementById(`at-${i}`).value);
-            const trabalhos = Number(document.getElementById(`tr-${i}`).value);
-            const auto = Number(document.getElementById(`auto-${i}`).value);
+        dataNiveis[i] = nivel;
 
-            const finalPercent = (mediaTestes * 0.6) + (atitudes * 0.2) + (trabalhos * 0.2);
-            
-            let nivel = 1;
-            if(finalPercent >= 90) nivel = 5;
-            else if(finalPercent >= 70) nivel = 4;
-            else if(finalPercent >= 50) nivel = 3;
-            else if(finalPercent >= 20) nivel = 2;
+        // Mostrar Resultados
+        const box = document.getElementById(`res-box-${i}`);
+        box.style.display = "block";
+        document.getElementById(`score-${i}`).innerText = finalScore.toFixed(1) + "%";
+        document.getElementById(`nivel-${i}`).innerText = "Nível " + nivel;
 
-            valoresNiveis.push(nivel);
+        // Comparação e Justificação
+        const reason = document.getElementById(`reason-${i}`);
+        let text = "";
+        if(auto === nivel) {
+            text = "O sistema concorda! A tua média de " + finalScore.toFixed(0) + " está perfeitamente alinhada com a tua perceção.";
+        } else if (nivel > auto) {
+            text = "O sistema é mais otimista! Estás a trabalhar para nível " + nivel + " mas avaliaste-te com " + auto + ". Estás no bom caminho!";
+        } else {
+            text = "O sistema sugere cautela. A tua média de " + finalScore.toFixed(0) + "% ainda te prende ao nível " + nivel + ". ";
+            if(avgTests < 50) text += "Foca-te em subir as notas dos testes (valem 60%).";
+        }
+        reason.innerText = text;
 
-            // Atualizar UI do Card
-            const badge = document.getElementById(`badge-${i}`);
-            badge.innerText = `Nível ${nivel}`;
-            badge.style.background = nivel >= 4 ? '#d1fae5' : (nivel === 3 ? '#fef3c7' : '#fee2e2');
-            badge.style.color = nivel >= 4 ? 'var(--success)' : (nivel === 3 ? 'var(--warning)' : 'var(--danger)');
-
-            // Raciocínio
-            const reason = document.getElementById(`reason-${i}`);
-            let text = "";
-            if (nivel === auto) {
-                text = `**Concordo.** A tua média de ${finalPercent.toFixed(0)}% valida o nível ${nivel}. Mantém o equilíbrio entre testes e atitudes.`;
-            } else if (nivel > auto) {
-                text = `**Discordo (Estás Melhor).** Tu avaliaste-te com ${auto}, mas os teus resultados (${finalPercent.toFixed(0)}%) já te colocam no nível ${nivel}. Confia mais no teu trabalho!`;
-            } else {
-                text = `**Discordo (Atenção).** Queres o nível ${auto}, mas a tua média atual é ${finalPercent.toFixed(0)}%. `;
-                if(mediaTestes < 50) text += "O peso dos testes (60%) está a baixar a nota. ";
-                if(atitudes < 70) text += "Melhorar as atitudes pode ajudar a subir.";
-            }
-            reason.innerText = text;
-        });
-
-        updateCharts(labels, valoresNiveis);
+        updateCharts();
     }
 
-    function updateCharts(labels, data) {
-        const commonOptions = {
-            responsive: true,
-            scales: { y: { min: 0, max: 5, ticks: { stepSize: 1 } } },
-            plugins: { legend: { display: false } }
-        };
+    let barChart, lineChart;
+    function updateCharts() {
+        const ctxBar = document.getElementById('barChart').getContext('2d');
+        const ctxLine = document.getElementById('lineChart').getContext('2d');
 
         if(barChart) barChart.destroy();
         if(lineChart) lineChart.destroy();
 
-        barChart = new Chart(document.getElementById('barChart'), {
-            type: 'bar',
-            data: { labels, datasets: [{ label: 'Nível', data, backgroundColor: '#4f46e5' }] },
-            options: { ...commonOptions, plugins: { title: { display: true, text: 'Níveis por Disciplina (Barras)' } } }
+        const config = (type) => ({
+            type: type,
+            data: {
+                labels: disciplinas,
+                datasets: [{
+                    label: 'Nível (1-5)',
+                    data: dataNiveis,
+                    backgroundColor: 'rgba(99, 102, 241, 0.5)',
+                    borderColor: '#6366f1',
+                    borderWidth: 2,
+                    tension: 0.4,
+                    fill: true
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: { y: { min: 0, max: 5, ticks: { stepSize: 1 } } },
+                plugins: { legend: { display: false } }
+            }
         });
 
-        lineChart = new Chart(document.getElementById('lineChart'), {
-            type: 'line',
-            data: { labels, datasets: [{ label: 'Progressão', data, borderColor: '#10b981', tension: 0.3, fill: true, backgroundColor: 'rgba(16, 185, 129, 0.1)' }] },
-            options: { ...commonOptions, plugins: { title: { display: true, text: 'Tendência Académica (Linhas)' } } }
-        });
+        barChart = new Chart(ctxBar, config('bar'));
+        lineChart = new Chart(ctxLine, config('line'));
     }
 
-    renderCards();
-    atualizarDashboard();
+    init();
 </script>
 
 </body>
