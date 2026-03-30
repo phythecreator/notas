@@ -3,226 +3,274 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard Escolar | Phythecreator</title>
+    <title>Dashboard Escolar Pro | Phythecreator</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
     
     <style>
         :root {
-            --bg: #0f172a;
-            --card: #1e293b;
-            --accent: #38bdf8;
-            --text: #f8fafc;
-            --success: #22c55e;
-            --warning: #eab308;
+            --bg: #f0f4f8;
+            --card: #ffffff;
+            --primary: #4f46e5;
+            --text-main: #1e293b;
+            --text-sub: #64748b;
+            --border: #e2e8f0;
+            --success: #10b981;
+            --warning: #f59e0b;
             --danger: #ef4444;
         }
 
         body { 
-            font-family: 'Inter', sans-serif; 
+            font-family: 'Plus Jakarta Sans', sans-serif; 
             background: var(--bg); 
-            color: var(--text); 
-            margin: 0; 
-            padding: 20px; 
+            color: var(--text-main); 
+            margin: 0; padding: 20px; 
         }
 
-        .header { text-align: center; margin-bottom: 40px; }
-        .header h1 { font-size: 2.5rem; font-weight: 800; color: var(--accent); margin-bottom: 5px; }
+        .header { text-align: center; margin-bottom: 30px; }
+        .header h1 { font-size: 2rem; color: var(--primary); margin-bottom: 5px; }
 
-        /* Dashboard Layout */
-        .dashboard-grid {
+        /* Gráficos */
+        .charts-row {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
             gap: 20px;
-            max-width: 1400px;
+            max-width: 1200px;
+            margin: 0 auto 40px;
+        }
+
+        .chart-box {
+            background: var(--card);
+            padding: 20px;
+            border-radius: 16px;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+            border: 1px solid var(--border);
+        }
+
+        /* Grid de Disciplinas */
+        .disciplinas-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 20px;
+            max-width: 1200px;
             margin: 0 auto;
         }
 
-        .chart-container {
-            grid-column: 1 / -1;
+        .card {
             background: var(--card);
             padding: 20px;
-            border-radius: 20px;
-            margin-bottom: 30px;
-            box-shadow: 0 10px 15px -3px rgba(0,0,0,0.3);
+            border-radius: 16px;
+            border: 1px solid var(--border);
+            transition: all 0.3s ease;
         }
 
-        /* Subject Cards */
-        .subject-card {
-            background: var(--card);
-            padding: 20px;
-            border-radius: 15px;
-            border-left: 5px solid var(--accent);
-            transition: transform 0.2s;
-        }
+        .card:hover { transform: translateY(-3px); box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); }
 
-        .subject-card:hover { transform: translateY(-5px); }
-        .subject-card h3 { margin-top: 0; color: var(--accent); border-bottom: 1px solid #334155; padding-bottom: 10px; }
+        h3 { margin-top: 0; color: var(--primary); border-bottom: 2px solid var(--bg); padding-bottom: 10px; }
 
-        .input-group { display: flex; flex-direction: column; gap: 10px; margin-bottom: 15px; }
-        .row { display: flex; gap: 10px; align-items: center; }
+        .input-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
         
-        label { font-size: 0.85rem; color: #94a3b8; }
-        input { 
-            background: #0f172a; border: 1px solid #334155; color: white; 
-            padding: 8px; border-radius: 6px; width: 60px; text-align: center;
+        label { font-size: 0.85rem; font-weight: 600; color: var(--text-sub); }
+        
+        input, select {
+            padding: 6px 10px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-family: inherit;
+            width: 70px;
         }
 
-        .tests-area { background: rgba(255,255,255,0.05); padding: 10px; border-radius: 8px; }
-
-        .final-score {
-            font-size: 1.2rem; font-weight: 600; text-align: center;
-            padding: 10px; border-radius: 8px; margin-top: 10px;
+        .tests-container {
+            background: var(--bg);
+            padding: 10px;
+            border-radius: 10px;
+            margin-bottom: 15px;
         }
 
-        .verdict { font-size: 0.8rem; margin-top: 5px; text-align: center; font-style: italic; }
+        .test-inputs { display: flex; gap: 5px; margin-top: 8px; flex-wrap: wrap; }
 
-        button.update-btn {
-            position: fixed; bottom: 30px; right: 30px;
-            padding: 15px 30px; background: var(--accent); color: var(--bg);
-            border: none; border-radius: 50px; font-weight: 800; cursor: pointer;
-            box-shadow: 0 10px 20px rgba(56, 189, 248, 0.4);
-            z-index: 100;
+        .result-area {
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 2px dashed var(--bg);
+        }
+
+        .nivel-badge {
+            display: inline-block;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-weight: 800;
+            font-size: 1.1rem;
+            margin-bottom: 10px;
+        }
+
+        .reasoning {
+            font-size: 0.8rem;
+            line-height: 1.4;
+            color: var(--text-sub);
+            background: #f8fafc;
+            padding: 10px;
+            border-radius: 8px;
+        }
+
+        .btn-update {
+            display: block; width: 250px; margin: 40px auto;
+            padding: 15px; background: var(--primary); color: white;
+            border: none; border-radius: 12px; font-weight: bold;
+            cursor: pointer; font-size: 1rem;
         }
     </style>
 </head>
 <body>
 
 <div class="header">
-    <h1>MEU DASHBOARD ESCOLAR</h1>
-    <p>Acompanhamento de Notas e Desempenho</p>
+    <h1>Dashboard Académico</h1>
+    <p>Escala Portuguesa (1 a 5) • Phythecreator</p>
 </div>
 
-<div class="dashboard-grid">
-    <div class="chart-container">
-        <canvas id="mainChart" height="100"></canvas>
+<div class="charts-row">
+    <div class="chart-box">
+        <canvas id="barChart"></canvas>
     </div>
-
-    <div id="disciplinas-grid" style="display: contents;"></div>
+    <div class="chart-box">
+        <canvas id="lineChart"></canvas>
+    </div>
 </div>
 
-<button class="update-btn" onclick="atualizarTudo()">ATUALIZAR GRÁFICO 🚀</button>
+<div id="grid" class="disciplinas-grid"></div>
+
+<button class="btn-update" onclick="atualizarDashboard()">ATUALIZAR TUDO 📈</button>
 
 <script>
-    const disciplinas = [
-        "História", "Português", "Geografia", "Francês", "Inglês", 
-        "Matemática", "Físico-Química", "Ciências", "Educação Física"
-    ];
+    const disciplinas = ["História", "Português", "Geografia", "Francês", "Inglês", "Matemática", "Físico-Química", "Ciências", "Educação Física"];
+    
+    function renderCards() {
+        const grid = document.getElementById('grid');
+        disciplinas.forEach((d, i) => {
+            grid.innerHTML += `
+                <div class="card">
+                    <h3>${d}</h3>
+                    
+                    <div class="input-row">
+                        <label>Nº de Testes:</label>
+                        <select id="num-t-${i}" onchange="gerarInputsTestes(${i})">
+                            <option value="2">2 Testes</option>
+                            <option value="3" selected>3 Testes</option>
+                            <option value="4">4 Testes</option>
+                        </select>
+                    </div>
 
-    // Criar os Cards no HTML
-    const grid = document.getElementById('disciplinas-grid');
-    disciplinas.forEach((disc, index) => {
-        grid.innerHTML += `
-            <div class="subject-card">
-                <h3>${disc}</h3>
-                <div class="input-group">
-                    <div class="tests-area">
+                    <div class="tests-container">
                         <label>Notas dos Testes (0-100):</label>
-                        <div class="row">
-                            <input type="number" class="t1-${index}" placeholder="T1" min="0" max="100">
-                            <input type="number" class="t2-${index}" placeholder="T2" min="0" max="100">
-                            <input type="number" class="t3-${index}" placeholder="T3" min="0" max="100">
-                        </div>
+                        <div id="test-inputs-${i}" class="test-inputs"></div>
                     </div>
-                    <div class="row">
+
+                    <div class="input-row">
                         <label>Atitudes (20%):</label>
-                        <input type="number" class="at-${index}" placeholder="0-100" min="0" max="100">
+                        <input type="number" id="at-${i}" value="0" min="0" max="100">
                     </div>
-                    <div class="row">
-                        <label>Trabalhos (20%):</label>
-                        <input type="number" class="tr-${index}" placeholder="0-100" min="0" max="100">
+
+                    <div class="input-row">
+                        <label>Questão-Aula/Trabalhos (20%):</label>
+                        <input type="number" id="tr-${i}" value="0" min="0" max="100">
                     </div>
-                    <div class="row" style="background: rgba(56, 189, 248, 0.1); padding: 5px; border-radius: 5px;">
+
+                    <div class="input-row" style="margin-top:15px; color: var(--primary)">
                         <label>Tua Autoavaliação (1-5):</label>
-                        <input type="number" class="auto-${index}" placeholder="1-5" min="1" max="5">
+                        <input type="number" id="auto-${i}" value="3" min="1" max="5">
+                    </div>
+
+                    <div class="result-area" id="res-${i}">
+                        <div class="nivel-badge" id="badge-${i}">Nível -</div>
+                        <div class="reasoning" id="reason-${i}">Preenche os dados para ver a análise.</div>
                     </div>
                 </div>
-                <div id="final-${index}" class="final-score">Nível: -</div>
-                <div id="verdict-${index}" class="verdict"></div>
-            </div>
-        `;
-    });
-
-    let myChart;
-
-    function calcularNota(index) {
-        const t1 = Number(document.querySelector(`.t1-${index}`).value) || 0;
-        const t2 = Number(document.querySelector(`.t2-${index}`).value) || 0;
-        const t3 = Number(document.querySelector(`.t3-${index}`).value) || 0;
-        const at = Number(document.querySelector(`.at-${index}`).value) || 0;
-        const tr = Number(document.querySelector(`.tr-${index}`).value) || 0;
-        const auto = Number(document.querySelector(`.auto-${index}`).value) || 0;
-
-        // Média dos testes (apenas os preenchidos)
-        let testesValidos = [t1, t2, t3].filter(v => v > 0);
-        let mediaTestes = testesValidos.length > 0 ? (testesValidos.reduce((a,b) => a+b) / testesValidos.length) : 0;
-
-        // Cálculo Final
-        let finalPercent = (mediaTestes * 0.6) + (at * 0.2) + (tr * 0.2);
-        
-        // Conversão para escala 1-5
-        let nivel = 1;
-        if(finalPercent >= 90) nivel = 5;
-        else if(finalPercent >= 70) nivel = 4;
-        else if(finalPercent >= 50) nivel = 3;
-        else if(finalPercent >= 20) nivel = 2;
-
-        // UI Update
-        const display = document.getElementById(`final-${index}`);
-        display.innerHTML = `Nível ${nivel} (${finalPercent.toFixed(0)}%)`;
-        
-        // Cores baseadas na nota
-        if(nivel >= 4) display.style.color = 'var(--success)';
-        else if(nivel == 3) display.style.color = 'var(--warning)';
-        else display.style.color = 'var(--danger)';
-
-        // Veredito
-        const verdict = document.getElementById(`verdict-${index}`);
-        if(auto > 0) {
-            if(auto === nivel) verdict.innerText = "✓ O sistema concorda contigo.";
-            else if(nivel > auto) verdict.innerText = "↑ Estás melhor do que pensas!";
-            else verdict.innerText = "↓ Precisas de focar mais.";
-        }
-
-        return nivel;
-    }
-
-    function atualizarTudo() {
-        const dadosNiveis = disciplinas.map((_, i) => calcularNota(i));
-
-        // Atualizar Gráfico
-        const ctx = document.getElementById('mainChart').getContext('2d');
-        
-        if (myChart) myChart.destroy();
-
-        myChart = new Chart(ctx, {
-            type: 'bar',
-            data: {
-                labels: disciplinas,
-                datasets: [{
-                    label: 'Nível por Disciplina (1-5)',
-                    data: dadosNiveis,
-                    backgroundColor: 'rgba(56, 189, 248, 0.6)',
-                    borderColor: '#38bdf8',
-                    borderWidth: 2,
-                    borderRadius: 8
-                }]
-            },
-            options: {
-                responsive: true,
-                scales: {
-                    y: { min: 0, max: 5, grid: { color: '#334155' }, ticks: { color: '#94a3b8' } },
-                    x: { ticks: { color: '#94a3b8' } }
-                },
-                plugins: {
-                    legend: { labels: { color: 'white', font: { weight: 'bold' } } }
-                }
-            }
+            `;
+            gerarInputsTestes(i);
         });
     }
 
-    // Inicializar gráfico vazio
-    window.onload = atualizarTudo;
+    function gerarInputsTestes(index) {
+        const num = document.getElementById(`num-t-${index}`).value;
+        const container = document.getElementById(`test-inputs-${index}`);
+        container.innerHTML = "";
+        for(let j=1; j<=num; j++) {
+            container.innerHTML += `<input type="number" class="t-input-${index}" placeholder="T${j}" value="0">`;
+        }
+    }
+
+    let barChart, lineChart;
+
+    function atualizarDashboard() {
+        const labels = disciplinas;
+        const valoresNiveis = [];
+
+        disciplinas.forEach((_, i) => {
+            const testes = Array.from(document.getElementsByClassName(`t-input-${i}`)).map(input => Number(input.value));
+            const mediaTestes = testes.reduce((a,b) => a+b, 0) / testes.length;
+            const atitudes = Number(document.getElementById(`at-${i}`).value);
+            const trabalhos = Number(document.getElementById(`tr-${i}`).value);
+            const auto = Number(document.getElementById(`auto-${i}`).value);
+
+            const finalPercent = (mediaTestes * 0.6) + (atitudes * 0.2) + (trabalhos * 0.2);
+            
+            let nivel = 1;
+            if(finalPercent >= 90) nivel = 5;
+            else if(finalPercent >= 70) nivel = 4;
+            else if(finalPercent >= 50) nivel = 3;
+            else if(finalPercent >= 20) nivel = 2;
+
+            valoresNiveis.push(nivel);
+
+            // Atualizar UI do Card
+            const badge = document.getElementById(`badge-${i}`);
+            badge.innerText = `Nível ${nivel}`;
+            badge.style.background = nivel >= 4 ? '#d1fae5' : (nivel === 3 ? '#fef3c7' : '#fee2e2');
+            badge.style.color = nivel >= 4 ? 'var(--success)' : (nivel === 3 ? 'var(--warning)' : 'var(--danger)');
+
+            // Raciocínio
+            const reason = document.getElementById(`reason-${i}`);
+            let text = "";
+            if (nivel === auto) {
+                text = `**Concordo.** A tua média de ${finalPercent.toFixed(0)}% valida o nível ${nivel}. Mantém o equilíbrio entre testes e atitudes.`;
+            } else if (nivel > auto) {
+                text = `**Discordo (Estás Melhor).** Tu avaliaste-te com ${auto}, mas os teus resultados (${finalPercent.toFixed(0)}%) já te colocam no nível ${nivel}. Confia mais no teu trabalho!`;
+            } else {
+                text = `**Discordo (Atenção).** Queres o nível ${auto}, mas a tua média atual é ${finalPercent.toFixed(0)}%. `;
+                if(mediaTestes < 50) text += "O peso dos testes (60%) está a baixar a nota. ";
+                if(atitudes < 70) text += "Melhorar as atitudes pode ajudar a subir.";
+            }
+            reason.innerText = text;
+        });
+
+        updateCharts(labels, valoresNiveis);
+    }
+
+    function updateCharts(labels, data) {
+        const commonOptions = {
+            responsive: true,
+            scales: { y: { min: 0, max: 5, ticks: { stepSize: 1 } } },
+            plugins: { legend: { display: false } }
+        };
+
+        if(barChart) barChart.destroy();
+        if(lineChart) lineChart.destroy();
+
+        barChart = new Chart(document.getElementById('barChart'), {
+            type: 'bar',
+            data: { labels, datasets: [{ label: 'Nível', data, backgroundColor: '#4f46e5' }] },
+            options: { ...commonOptions, plugins: { title: { display: true, text: 'Níveis por Disciplina (Barras)' } } }
+        });
+
+        lineChart = new Chart(document.getElementById('lineChart'), {
+            type: 'line',
+            data: { labels, datasets: [{ label: 'Progressão', data, borderColor: '#10b981', tension: 0.3, fill: true, backgroundColor: 'rgba(16, 185, 129, 0.1)' }] },
+            options: { ...commonOptions, plugins: { title: { display: true, text: 'Tendência Académica (Linhas)' } } }
+        });
+    }
+
+    renderCards();
+    atualizarDashboard();
 </script>
 
 </body>
